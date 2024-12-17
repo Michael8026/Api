@@ -1,5 +1,4 @@
-﻿using api.Data;
-using api.Dtos;
+﻿using api.Dtos;
 using api.Dtos.Stock;
 using api.Helpers;
 using api.Interfaces;
@@ -13,12 +12,10 @@ namespace api.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IStockRepository _repository;
 
-        public StockController(ApplicationDbContext context, IStockRepository repository)
+        public StockController(IStockRepository repository)
         {
-            _context = context;
             _repository = repository;
         }
 
