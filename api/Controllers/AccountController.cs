@@ -14,11 +14,13 @@ namespace api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        private readonly IUserProfileRepository _userProfileRepository;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager, IUserProfileRepository userProfileRepository)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _userProfileRepository = userProfileRepository;
         }
 
         [HttpPost("register")]
@@ -33,8 +35,8 @@ namespace api.Controllers
 
                 var appUser = new AppUser
                 {
-                    UserName = registerDto.Email,
-                    Email = registerDto.Email
+                    UserName = registerDto.Email.ToLowerInvariant(),
+                    Email = registerDto.Email.ToLowerInvariant(),
                 };
 
                 var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
@@ -45,6 +47,18 @@ namespace api.Controllers
 
                     if (roleResult.Succeeded)
                     {
+                        var userProfile = new UserProfile
+                        {
+                            Id = appUser.Id,
+                            Email = registerDto.Email,
+                            FirstName = registerDto.FirstName,
+                            LastName = registerDto.LastName,
+                            Gender = registerDto.Gender,
+                            Age = registerDto.Age
+                        };
+
+                        await _userProfileRepository.CreateAsync(userProfile);
+
                         return Ok(new NewUserDto
                         {
                             Email = appUser.Email,

@@ -1,30 +1,28 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Dtos.Account
+namespace api.Models
 {
-    public class RegisterDto
+    [Table("userprofiles")]
+    public class UserProfile
     {
-        [Required]
-        [EmailAddress]
+        public string Id { get; set; }
+
         [MaxLength(255)]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
-
-        [Required]
         [MaxLength(50)]
         public string FirstName { get; set; }
 
-        [Required]
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        [Required]
         [MaxLength(10)]
         public string Gender { get; set; }
 
-        [Required]
         public int Age { get; set; }
+
+
+        public AppUser AppUser { get; set; }
     }
 }

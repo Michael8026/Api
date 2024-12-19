@@ -15,11 +15,18 @@ namespace api.Data
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Portfolio> Portfolios { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<UserProfile>()
+                .HasOne(p => p.AppUser)
+                .WithOne()
+                .HasForeignKey<UserProfile>(p => p.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Portfolio>(x => x.HasKey(p => new { p.AppUserId, p.StockId }));
 
