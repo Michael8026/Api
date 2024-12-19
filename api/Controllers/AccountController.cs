@@ -123,6 +123,45 @@ namespace api.Controllers
         }
 
 
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserDto updateUserDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound("User not found!");
+
+            var userProfile = await _userProfileRepository.GetByIdAsync(id);
+            if (userProfile == null)
+                return NotFound("User profile not found!");
+
+            user.Email = updateUserDto.Email.ToLower();
+            user.UserName = updateUserDto.Email.ToLower();
+
+            var updatedUser = await _userManager.UpdateAsync(user);
+            if (!updatedUser.Succeeded)
+                return BadRequest(updatedUser.Errors);
+
+            await _userProfileRepository.UpdateAsync(id, updateUserDto);
+
+            return Ok("Userprofile updated successfully");
+
+        }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _userProfileRepository.GetAllAsync();
+
+            return Ok(users);
+        }
+
+
+
+
+
 
 
     }
