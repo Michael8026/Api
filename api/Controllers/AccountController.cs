@@ -23,6 +23,14 @@ namespace api.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _userProfileRepository.GetAllAsync();
+
+            return Ok(users);
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
@@ -150,12 +158,13 @@ namespace api.Controllers
 
         }
 
-        [HttpGet("users")]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _userProfileRepository.GetAllAsync();
 
-            return Ok(users);
+        [HttpGet("by_email")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            var user = await _userProfileRepository.GetByEmailAsync(email);
+
+            return Ok(user);
         }
 
 
