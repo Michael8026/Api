@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace api.Data
 {
@@ -26,6 +27,12 @@ namespace api.Data
                 .HasOne(p => p.AppUser)
                 .WithOne()
                 .HasForeignKey<UserProfile>(p => p.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Comment>()
+                .HasOne(p => p.AppUser)
+                .WithMany(p => p.Comments)
+                .HasForeignKey(p => p.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Portfolio>(x => x.HasKey(p => new { p.AppUserId, p.StockId }));
